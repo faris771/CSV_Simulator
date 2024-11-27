@@ -1,4 +1,3 @@
-
 #include "header.h"
 #include "shared_memories.h"
 #include "message_queues.h"
@@ -17,8 +16,8 @@ int main(int argc, char** argv){
     char file_path[MSG_SIZE];
 
     while (1) {
-        // Receive file path from the message queue
-        receive_message(msg_queue_id, file_path);
+        receive_message(msg_queue_id, 2, file_path); // Only process type-2 messages
+
         printf("Mover received: %s\n", file_path);
 
         // Move the file to the Processed directory

@@ -110,7 +110,7 @@ void generate_csv_file() {
 
     semaphore_signal(sem); // Unlock semaphore
 
-    send_message(msg_queue_id, file_path);
+ send_message(msg_queue_id, 1, file_path); // File calculator messages
 }
 
 

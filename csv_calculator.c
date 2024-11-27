@@ -38,7 +38,8 @@ void process_csv_file() {
 
     while (1) {
         // Wait for the file path from the message queue and store it in file_path
-        receive_message(msg_queue_id, file_path);
+       receive_message(msg_queue_id, 1, file_path); // Only process type-1 messages
+
 
         // Extract file serial number from the filename
         char *filename = strrchr(file_path, '/');
@@ -96,8 +97,7 @@ void process_csv_file() {
         shm_ptr->totalProcessed++;
         semaphore_signal(sem);
 
-        // Notify the mover that the file has been processed
-        send_message(msg_queue_id, file_path);
+      send_message(msg_queue_id, 2, file_path); // File mover notifications
         printf("Notification sent to mover: %s\n", file_path);
     }
 }

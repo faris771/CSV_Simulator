@@ -23,9 +23,9 @@ int setup_message_queue() {
 }
 
 
-void send_message(int msg_id, const char* msg_text) {
+void send_message(int msg_id, long type, const char* msg_text) {
     struct message msg;
-    msg.type = 1;  // Message type
+    msg.type = type;  // Set the message type dynamically
     snprintf(msg.data, sizeof(msg.data), "%s", msg_text);
 
     if (msgsnd(msg_id, &msg, sizeof(msg.data), 0) == -1) {
@@ -33,6 +33,7 @@ void send_message(int msg_id, const char* msg_text) {
         exit(EXIT_FAILURE);
     }
 }
+
 
 // Cleanup message queue
 void cleanup_message_queue() {
@@ -42,18 +43,16 @@ void cleanup_message_queue() {
     }
 }
 
-void receive_message(int msg_id, char *file_path) {
+void receive_message(int msg_id, long type, char *file_path) {
     struct message msg;
 
-    // Receive the message from the message queue
-    if (msgrcv(msg_id, &msg, sizeof(msg.data), 0, 0) == -1) {
+    if (msgrcv(msg_id, &msg, sizeof(msg.data), type, 0) == -1) {
         perror("Message receiving failed");
         exit(EXIT_FAILURE);
     }
 
-    // Copy the received message to the file_path buffer
     strncpy(file_path, msg.data, MSG_SIZE);
-
-    printf("Received message: %s\n", file_path);  // Print the received file path
+    printf("Received message (Type %ld): %s\n", type, file_path);
 }
+
 #endif
