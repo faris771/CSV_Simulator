@@ -1,5 +1,16 @@
-FILE_GENERATORS=10
+FILE_GENERATORS=2
 CSV_CALCULATORS=4
 FILE_MOVERS=2
 INSPECTORS=6
 TIMER_DURATION=60
+min_rows=1000
+max_rows=10000
+min_cols=5
+max_cols=10
+min_time_generate=5
+max_time_generate=10
+min_value=0
+max_value=100
+miss_percentage=10
+
+

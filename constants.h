@@ -6,6 +6,20 @@
 
 // Message queue key
 #define MESSAGE_QUEUE_KEY 0x2222
+#define HOME_DIR "./home"
+#define DEFAULT_ROWS_MAX 10000
+#define DEFAULT_COLS_MAX 10
+#define DEFAULT_ROWS_MIN 100
+#define DEFAULT_COLS_MIN 1
+#define DEFAULT_MIN_VALUE 0.0
+#define DEFAULT_MAX_VALUE 100.0
+#define DEFAULT_MISS_PERCENTAGE 0.0
+#define DEFAULT_GENERATORS 5
+#define DEFAULT_MAX_TIME 10
+#define DEFAULT_MIN_TIME 1
+#define MSG_SIZE 256
+#define  MAX_FILES 100
+#define  MAX_COLUMNS 100
 
 // Semaphore key (used with sem_open)
 #define SEMAPHORE_KEY "/sem_key"
