@@ -88,14 +88,22 @@ void process_csv_file() {
 
         fclose(file);
 
-        // Update shared memory (synchronized with semaphore)
-        semaphore_wait(sem);
-        shm_ptr->numRows[fileSerial] = rows;
-        for (int i = 0; i < cols; i++) {
-            shm_ptr->columnAverages[fileSerial][i] = (columnCounts[i] > 0) ? columnSums[i] / columnCounts[i] : 0;
-        }
-        shm_ptr->totalProcessed++;
-        semaphore_signal(sem);
+       // Update shared memory (synchronized with semaphore)
+      semaphore_wait(sem);
+      shm_ptr->numRows[fileSerial] = rows;
+
+     // Print computed averages for verification
+     printf("File %d.csv processed:\n", fileSerial);
+     for (int i = 0; i < cols; i++) {
+    double average = (columnCounts[i] > 0) ? columnSums[i] / columnCounts[i] : 0;
+    shm_ptr->columnAverages[fileSerial][i] = average; // Update shared memory
+    printf("  Column %d: Sum = %.2f, Count = %d, Average = %.2f\n",
+           i + 1, columnSums[i], columnCounts[i], average);
+   }
+
+     shm_ptr->totalProcessed++;
+     semaphore_signal(sem);
+
 
       send_message(msg_queue_id, 2, file_path); // File mover notifications
         printf("Notification sent to mover: %s\n", file_path);
