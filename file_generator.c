@@ -5,26 +5,54 @@
 #include "constants.h"
 #include "functions.h"
 sem_t *sem;
-static int file_serial = 0;
 int shm_id;
 int msg_queue_id;
 int max_rows = DEFAULT_ROWS_MAX, max_cols = DEFAULT_COLS_MAX, min_rows = DEFAULT_ROWS_MIN, min_cols = DEFAULT_COLS_MIN ; // Default values
-int min_value = DEFAULT_MIN_VALUE, max_value = DEFAULT_MAX_VALUE  ;
+double min_value = DEFAULT_MIN_VALUE, max_value = DEFAULT_MAX_VALUE  ;
 int max_time_generate = DEFAULT_MAX_TIME , min_time_generate = DEFAULT_MIN_TIME;
-float miss_percentage = DEFAULT_MISS_PERCENTAGE;
+double miss_percentage = DEFAULT_MISS_PERCENTAGE;
 SharedMemory shm_ptr;
 void generate_csv_file();
 void update_shared_mem();
 int main(int argc, char** argv){
 
     // Argument variables
-    int file_generators, csv_calculators, file_movers, inspectors, timer_duration,min_rows,max_rows,min_cols,max_cols ,min_time_generate,max_time_generate
-                    ,min_value,max_value,miss_percentage;
-
+    int file_generators, csv_calculators, file_movers, timer_duration,min_rows,max_rows,min_cols,max_cols ,min_time_generate,max_time_generate
+                    ;
+    double min_value,max_value,miss_percentage;
+    int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
     // Read arguments from file
-    read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers, &inspectors, &timer_duration,
+    read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers,
+                   &type1_inspectors, &type2_inspectors, &type3_inspectors, &timer_duration,
                    &min_rows, &max_rows, &min_cols, &max_cols, &min_time_generate, &max_time_generate,
                    &min_value, &max_value, &miss_percentage);
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    printf("MASA CHECK -----> FILE_GENERATORS=%d\n", file_generators);
+    printf("MASA CHECK -----> CSV_CALCULATORS=%d\n", csv_calculators);
+    printf("MASA CHECK -----> FILE_MOVERS=%d\n", file_movers);
+    printf("MASA CHECK -----> TYPE1_INSPECTORS=%d\n", type1_inspectors);
+    printf("MASA CHECK -----> TYPE2_INSPECTORS=%d\n", type2_inspectors);
+    printf("MASA CHECK -----> TYPE3_INSPECTORS=%d\n", type3_inspectors);
+    printf("MASA CHECK -----> TIMER_DURATION=%d\n", timer_duration);
+    printf("MASA CHECK -----> MIN_ROWS=%d\n", min_rows);
+    printf("MASA CHECK -----> MAX_ROWS=%d\n", max_rows);
+    printf("MASA CHECK -----> MIN_COLS=%d\n", min_cols);
+    printf("MASA CHECK -----> MAX_COLS=%d\n", max_cols);
+    printf("MASA CHECK -----> MIN_TIME_GENERATE=%d\n", min_time_generate);
+    printf("MASA CHECK -----> MAX_TIME_GENERATE=%d\n", max_time_generate);
+    printf("MASA CHECK -----> MIN_VALUE=%.2f\n", min_value);
+    printf("MASA CHECK -----> MAX_VALUE=%.2f\n", max_value);
+    printf("MASA CHECK -----> MISS_PERCENTAGE=%.2f\n", miss_percentage);
+
+    ////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
     srand(time(NULL) + getpid()); // Seed for randomness
     sem = setup_semaphore();
     shm_id = setup_shared_memory();  // Create shared memory segment
@@ -90,7 +118,9 @@ void generate_csv_file() {
                 fprintf(file, " ,");
             } else {
                 // Non-missing value
-                fprintf(file, "%.2f", (float)(min_value + rand() % (max_value - min_value + 1)));
+            float random_value = min_value + ((float)rand() / RAND_MAX) * (max_value - min_value);
+             fprintf(file, "%.2f", random_value);
+
             }
 
             if (j < cols - 1) {

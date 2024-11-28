@@ -101,4 +101,3 @@ void process_csv_file() {
         printf("Notification sent to mover: %s\n", file_path);
     }
 }
-

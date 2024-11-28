@@ -8,19 +8,26 @@
 // Function prototypes
 void setup_resources();
 void cleanup_resources();
-void fork_processes(int file_generators, int csv_calculators, int file_movers, int inspectors);
+void fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors, int type3_inspectors);
 void monitor_simulation(int duration, int processed_threshold, int unprocessed_threshold, int moved_threshold, int deleted_threshold);
 void create_drawer_process();
 void handle_signal(int sig);
 
 // Main program
 int main(int argc, char** argv) {
+    printf("masa is here\n");
     // Argument variables
-    int file_generators, csv_calculators, file_movers, inspectors, timer_duration,min_rows,max_rows,min_cols,max_cols ,min_time_generate,max_time_generate
-                    ,min_value,max_value,miss_percentage;
+    int file_generators, csv_calculators, file_movers, timer_duration,min_rows,
+        max_rows,min_cols,max_cols ,min_time_generate,
+        max_time_generate;
+    double min_value, max_value, miss_percentage;
+    int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
 
+    // changed these
+    //double min_value, max_value, miss_percentage;
     // Read arguments from file
-    read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers, &inspectors, &timer_duration,
+    read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers,
+                   &type1_inspectors, &type2_inspectors, &type3_inspectors, &timer_duration,
                    &min_rows, &max_rows, &min_cols, &max_cols, &min_time_generate, &max_time_generate,
                    &min_value, &max_value, &miss_percentage);
 
@@ -29,7 +36,9 @@ int main(int argc, char** argv) {
     printf("FILE_GENERATORS=%d\n", file_generators);
     printf("CSV_CALCULATORS=%d\n", csv_calculators);
     printf("FILE_MOVERS=%d\n", file_movers);
-    printf("INSPECTORS=%d\n", inspectors);
+    printf("TYPE1_INSPECTORS=%d\n", type1_inspectors);
+    printf("TYPE2_INSPECTORS=%d\n", type2_inspectors);
+    printf("TYPE3_INSPECTORS=%d\n", type3_inspectors);
     printf("TIMER_DURATION=%d\n", timer_duration);
     printf("MIN_ROWS=%d\n", min_rows);
     printf("MAX_ROWS=%d\n", max_rows);
@@ -51,7 +60,7 @@ int main(int argc, char** argv) {
     create_drawer_process();
 
     // Fork processes
-    fork_processes(file_generators, csv_calculators, file_movers, inspectors);
+    fork_processes(file_generators, csv_calculators, file_movers, type1_inspectors, type2_inspectors, type3_inspectors);
 
     // Monitor simulation
     monitor_simulation(timer_duration, PROCESSED_THRESHOLD, UNPROCESSED_THRESHOLD, MOVED_THRESHOLD, DELETED_THRESHOLD);
@@ -175,7 +184,7 @@ void handle_signal(int sig) {
     exit(0);
 }
 
-void fork_processes(int file_generators, int csv_calculators, int file_movers, int inspectors) {
+void fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors, int type3_inspectors) {
     pid_t pid;
 
     // Fork file generators
@@ -223,23 +232,66 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers, i
         }
     }
 
-    // Fork inspectors
-    for (int i = 0; i < inspectors; i++) {
+    // // Fork inspectors
+    // for (int i = 0; i < inspectors; i++) {
+    //     pid = fork();
+    //     if (pid == 0) {
+    //         char inspector_type[32];
+    //         sprintf(inspector_type, "./inspector_type%d", (i % 3) + 1);
+    //         printf("Inspector %d of type %d started\n", i, (i % 3) + 1);
+    //         execlp(inspector_type, inspector_type, NULL);
+    //         perror("Inspector Exec Error");
+    //         exit(EXIT_FAILURE);
+    //     }
+    //     else if (pid < 0) {
+    //         perror("Error forking inspector");
+    //         exit(EXIT_FAILURE);
+    //     }
+    // }
+
+////////////////////////////////////////////////////////////////
+
+    // Fork Type 1 inspectors
+    for (int i = 0; i < type1_inspectors; i++) {
         pid = fork();
         if (pid == 0) {
-            char inspector_type[32];
-            sprintf(inspector_type, "./inspector_type%d", (i % 3) + 1);
-            printf("Inspector %d of type %d started\n", i, (i % 3) + 1);
-            execlp(inspector_type, inspector_type, NULL);
-            perror("Inspector Exec Error");
+            printf("Type 1 inspector %d started\n", i + 1);
+            execlp("./inspector_type1", "inspector_type1", NULL);
+            perror("Type 1 Inspector Exec Error");
             exit(EXIT_FAILURE);
-        }
-        else if (pid < 0) {
-            perror("Error forking inspector");
+        } else if (pid < 0) {
+            perror("Error forking Type 1 inspector");
             exit(EXIT_FAILURE);
         }
     }
+
+    // Fork Type 2 inspectors
+    for (int i = 0; i < type2_inspectors; i++) {
+        pid = fork();
+        if (pid == 0) {
+            printf("Type 2 inspector %d started\n", i + 1);
+            execlp("./inspector_type2", "inspector_type2", NULL);
+            perror("Type 2 Inspector Exec Error");
+            exit(EXIT_FAILURE);
+        } else if (pid < 0) {
+            perror("Error forking Type 2 inspector");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Fork Type 3 inspectors
+    for (int i = 0; i < type3_inspectors; i++) {
+        pid = fork();
+        if (pid == 0) {
+            printf("Type 3 inspector %d started\n", i + 1);
+            execlp("./inspector_type3", "inspector_type3", NULL);
+            perror("Type 3 Inspector Exec Error");
+            exit(EXIT_FAILURE);
+        } else if (pid < 0) {
+            perror("Error forking Type 3 inspector");
+            exit(EXIT_FAILURE);
+        }
+    }
+
     printf("Processes forked successfully.\n");
 }
-
-
