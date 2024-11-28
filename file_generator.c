@@ -21,11 +21,12 @@ int main(int argc, char** argv){
     int file_generators, csv_calculators, file_movers, timer_duration,min_rows,max_rows,min_cols,max_cols ,min_time_generate,max_time_generate
                     ,min_value,max_value,miss_percentage;
     int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
+    int age_threshold = 0;
     // Read arguments from file
     read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers, 
                    &type1_inspectors, &type2_inspectors, &type3_inspectors, &timer_duration,
                    &min_rows, &max_rows, &min_cols, &max_cols, &min_time_generate, &max_time_generate,
-                   &min_value, &max_value, &miss_percentage);
+                   &min_value, &max_value, &miss_percentage, &age_threshold);
     
     ////////////////////////////////////////////////////////////////////////////
 
@@ -47,11 +48,6 @@ int main(int argc, char** argv){
     printf("MASA CHECK -----> MISS_PERCENTAGE=%.2f\n", miss_percentage);
 
     ////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
 
     srand(time(NULL) + getpid()); // Seed for randomness
     sem = setup_semaphore();

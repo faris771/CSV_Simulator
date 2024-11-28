@@ -8,7 +8,7 @@
 // Function prototypes
 void setup_resources();
 void cleanup_resources();
-void fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors, int type3_inspectors);
+void fork_processes(file_generators, csv_calculators, file_movers, type1_inspectors, type2_inspectors, type3_inspectors, age_threshold);
 void monitor_simulation(int duration, int processed_threshold, int unprocessed_threshold, int moved_threshold, int deleted_threshold);
 void create_drawer_process();
 void handle_signal(int sig);
@@ -21,14 +21,14 @@ int main(int argc, char** argv) {
         max_rows,min_cols,max_cols ,min_time_generate,
         max_time_generate,min_value, max_value, miss_percentage;
     int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
-
+    int age_threshold = 0;
     // changed these
     //double min_value, max_value, miss_percentage;
     // Read arguments from file
     read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers, 
                    &type1_inspectors, &type2_inspectors, &type3_inspectors, &timer_duration,
                    &min_rows, &max_rows, &min_cols, &max_cols, &min_time_generate, &max_time_generate,
-                   &min_value, &max_value, &miss_percentage);
+                   &min_value, &max_value, &miss_percentage, &age_threshold);
 
     // Print the loaded arguments
     printf("Arguments loaded:\n");
@@ -48,6 +48,7 @@ int main(int argc, char** argv) {
     printf("MIN_VALUE=%.2f\n", min_value);
     printf("MAX_VALUE=%.2f\n", max_value);
     printf("MISS_PERCENTAGE=%.2f\n", miss_percentage);
+    printf("AGE_THRESHOLD=%d\n", age_threshold);
 
     // Handle signal for cleanup
     signal(SIGINT, handle_signal);
@@ -59,7 +60,7 @@ int main(int argc, char** argv) {
     create_drawer_process();
 
     // Fork processes
-    fork_processes(file_generators, csv_calculators, file_movers, type1_inspectors, type2_inspectors, type3_inspectors);
+    fork_processes(file_generators, csv_calculators, file_movers, type1_inspectors, type2_inspectors, type3_inspectors, age_threshold);
 
     // Monitor simulation
     monitor_simulation(timer_duration, PROCESSED_THRESHOLD, UNPROCESSED_THRESHOLD, MOVED_THRESHOLD, DELETED_THRESHOLD);
@@ -183,7 +184,8 @@ void handle_signal(int sig) {
     exit(0);
 }
 
-void fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors, int type3_inspectors) {
+void fork_processes(int file_generators, int csv_calculators, int file_movers, 
+    int type1_inspectors, int type2_inspectors, int type3_inspectors, int age_threshold) {
     pid_t pid;
 
     // Fork file generators
@@ -255,7 +257,9 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers, i
         pid = fork();
         if (pid == 0) {
             printf("Type 1 inspector %d started\n", i + 1);
-            execlp("./inspector_type1", "inspector_type1", NULL);
+            char age_arg[16];
+            sprintf(age_arg, "%d", age_threshold);
+            execlp("./inspector_type1", "inspector_type1", age_arg, NULL); // Pass age_threshold
             perror("Type 1 Inspector Exec Error");
             exit(EXIT_FAILURE);
         } else if (pid < 0) {
@@ -269,7 +273,9 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers, i
         pid = fork();
         if (pid == 0) {
             printf("Type 2 inspector %d started\n", i + 1);
-            execlp("./inspector_type2", "inspector_type2", NULL);
+            char age_arg[16];
+            sprintf(age_arg, "%d", age_threshold);
+            execlp("./inspector_type2", "inspector_type2", age_arg, NULL); // Pass age_threshold
             perror("Type 2 Inspector Exec Error");
             exit(EXIT_FAILURE);
         } else if (pid < 0) {
@@ -283,7 +289,9 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers, i
         pid = fork();
         if (pid == 0) {
             printf("Type 3 inspector %d started\n", i + 1);
-            execlp("./inspector_type3", "inspector_type3", NULL);
+            char age_arg[16];
+            sprintf(age_arg, "%d", age_threshold);
+            execlp("./inspector_type3", "inspector_type3", age_arg, NULL); // Pass age_threshold
             perror("Type 3 Inspector Exec Error");
             exit(EXIT_FAILURE);
         } else if (pid < 0) {

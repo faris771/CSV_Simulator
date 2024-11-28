@@ -37,9 +37,11 @@ void process_csv_file() {
     char file_path[MSG_SIZE]; // Variable to hold the file path
 
     while (1) {
+        sleep(5); // 5 seconds delay
+        
         // Wait for the file path from the message queue and store it in file_path
        receive_message(msg_queue_id, 1, file_path); // Only process type-1 messages
-
+        
 
         // Extract file serial number from the filename
         char *filename = strrchr(file_path, '/');
