@@ -11,6 +11,12 @@ struct shared_memory {
     int totalUnprocessed;   // Total CSV files moved to Unprocessed
     int totalMoved;         // Total CSV files moved to Processed
     int totalDeleted;       // Total CSV files deleted
+    int fileSerial ;
+
+    int numRows[MAX_FILES];                // Number of rows for each file
+    double columnAverages[MAX_FILES][MAX_COLUMNS]; // 2D array to store the average of each column for every file
+
+
 };
 
 typedef struct shared_memory *SharedMemory;
