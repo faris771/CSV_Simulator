@@ -7,19 +7,29 @@
 
 // Function prototypes
 void setup_resources();
+
 void cleanup_resources();
-void fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors, int type3_inspectors);
-void monitor_simulation(int duration, int processed_threshold, int unprocessed_threshold, int moved_threshold, int deleted_threshold);
+
+void
+fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors,
+               int type3_inspectors);
+
+void monitor_simulation(int duration, int processed_threshold, int unprocessed_threshold, int moved_threshold,
+                        int deleted_threshold);
+
 void create_drawer_process();
+
 void handle_signal(int sig);
 
 // Main program
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
+
+
     printf("masa is here\n");
     // Argument variables
-    int file_generators, csv_calculators, file_movers, timer_duration,min_rows,
-        max_rows,min_cols,max_cols ,min_time_generate,
-        max_time_generate;
+    int file_generators, csv_calculators, file_movers, timer_duration, min_rows,
+            max_rows, min_cols, max_cols, min_time_generate,
+            max_time_generate;
     double min_value, max_value, miss_percentage;
     int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
 
@@ -70,6 +80,7 @@ int main(int argc, char** argv) {
 
 // Create the drawer process
 void create_drawer_process() {
+
     printf("Creating the drawer process...\n");
 
     pid_t drawer;
@@ -81,7 +92,7 @@ void create_drawer_process() {
 
     // To let the drawer leave the main code and execute drawer.c
     if (drawer == 0) {
-        execlp("./drawer", "drawer", (char *)NULL);
+        execlp("./drawer", "drawer", (char *) NULL);
 
         // If the program doesn't have enough memory, it will raise an error
         perror("Drawer exec Failure\n");
@@ -92,7 +103,8 @@ void create_drawer_process() {
 }
 
 // Monitor the simulation for termination conditions
-void monitor_simulation(int duration, int processed_threshold, int unprocessed_threshold, int moved_threshold, int deleted_threshold) {
+void monitor_simulation(int duration, int processed_threshold, int unprocessed_threshold, int moved_threshold,
+                        int deleted_threshold) {
     time_t start_time = time(NULL);
     time_t current_time;
 
@@ -153,12 +165,12 @@ void setup_resources() {
     shm->totalDeleted = 0; // Initialize deleted count
     shm->fileSerial = 0;
     for (int i = 0; i < MAX_FILES; i++) {
-    shm->numRows[i] = 0;
+        shm->numRows[i] = 0;
 
-    for (int j = 0; j < MAX_COLUMNS; j++) {
-        shm->columnAverages[i][j] = 0.0;
+        for (int j = 0; j < MAX_COLUMNS; j++) {
+            shm->columnAverages[i][j] = 0.0;
+        }
     }
-}
     detach_shared_memory(shm);
 
     // Initialize other IPC resources
@@ -184,7 +196,9 @@ void handle_signal(int sig) {
     exit(0);
 }
 
-void fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors, int type3_inspectors) {
+void
+fork_processes(int file_generators, int csv_calculators, int file_movers, int type1_inspectors, int type2_inspectors,
+               int type3_inspectors) {
     pid_t pid;
 
     // Fork file generators
@@ -195,8 +209,7 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers, i
             execlp("./file_generator", "file_generator", NULL);
             perror("File Generator Exec Error");
             exit(EXIT_FAILURE);
-        }
-        else if (pid < 0) {
+        } else if (pid < 0) {
             perror("Error forking file generator");
             exit(EXIT_FAILURE);
         }
@@ -210,8 +223,7 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers, i
             execlp("./csv_calculator", "csv_calculator", NULL);
             perror("CSV Calculator Exec Error");
             exit(EXIT_FAILURE);
-        }
-        else if (pid < 0) {
+        } else if (pid < 0) {
             perror("Error forking CSV calculator");
             exit(EXIT_FAILURE);
         }
@@ -225,8 +237,7 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers, i
             execlp("./file_mover", "file_mover", NULL);
             perror("File Mover Exec Error");
             exit(EXIT_FAILURE);
-        }
-        else if (pid < 0) {
+        } else if (pid < 0) {
             perror("Error forking file mover");
             exit(EXIT_FAILURE);
         }
