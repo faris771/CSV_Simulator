@@ -18,8 +18,9 @@ void update_shared_mem();
 int main(int argc, char** argv){
 
     // Argument variables
-    int file_generators, csv_calculators, file_movers, timer_duration,min_rows,max_rows,min_cols,max_cols ,min_time_generate,max_time_generate
-                    ,min_value,max_value,miss_percentage;
+    int file_generators, csv_calculators, file_movers, timer_duration,min_rows,max_rows,
+        min_cols,max_cols ,min_time_generate,max_time_generate;
+    double min_value,max_value,miss_percentage;               
     int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
     int age_threshold = 0;
     // Read arguments from file
@@ -67,6 +68,7 @@ int main(int argc, char** argv){
 void generate_csv_file() {
     // Calculate random generation time
     int gen_time = min_time_generate + rand() % (max_time_generate - min_time_generate + 1);
+    printf("THE min_time_generate IS %d AND THE max_time_generate IS %d and thus the gen_time IS %d\n\n", min_time_generate, max_time_generate, gen_time);
     sleep(gen_time);
 
     // Create directory if it doesn't exist
@@ -88,7 +90,7 @@ void generate_csv_file() {
     // Open file for writing
     FILE *file = fopen(file_path, "w");
     if (!file) {
-        perror("Error creating CSV file");
+        perror("file_generator______Error creating CSV file");
         exit(EXIT_FAILURE);
     }
 

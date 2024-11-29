@@ -7,6 +7,8 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <time.h>
+#include <stdlib.h> // For malloc and free
+#include <stdio.h>  // For snprintf and perror
 
 sem_t *sem; // Declare the semaphore
 
@@ -14,11 +16,12 @@ void ensure_directory(const char *path);
 
 int main(int argc, char **argv) {
     printf("Inspector Type 1 Running...\n");
+
     if (argc != 2) {
         fprintf(stderr, "Usage: inspector_type1 <age_threshold_in_seconds>\n");
         exit(EXIT_FAILURE);
     }
-    //age_threshold argument, which specifies the maximum file age in seconds before a file is considered unprocessed.
+
     // Parse age threshold from arguments
     int age_threshold = atoi(argv[1]);
 
@@ -26,11 +29,9 @@ int main(int argc, char **argv) {
     sem = setup_semaphore();
 
     // Ensure that the "home" and "UnProcessed" directories exist
-    // if directories dont exist then they are created
     ensure_directory(HOME_DIR);
     ensure_directory("./home/UnProcessed");
 
-    
     while (1) {
         DIR *home_dir = opendir(HOME_DIR);
         if (!home_dir) {
@@ -40,8 +41,6 @@ int main(int argc, char **argv) {
 
         struct dirent *entry;
         struct stat file_stat;
-        char file_path[MSG_SIZE];
-        char new_path[MSG_SIZE];
 
         // Access shared memory
         int shm_id = shmget(SHARED_MEMORY_KEY, sizeof(struct shared_memory), 0666);
@@ -61,12 +60,30 @@ int main(int argc, char **argv) {
             // Skip non-CSV files
             if (strstr(entry->d_name, ".csv") == NULL) continue;
 
+            // Allocate memory for file paths
+            char *file_path = malloc(strlen(HOME_DIR) + strlen(entry->d_name) + 2); // +2 for '/' and '\0'
+            char *new_path = malloc(strlen("./home/UnProcessed/") + strlen(entry->d_name) + 1); // +1 for '\0'
+
+            if (!file_path || !new_path) {
+                perror("Memory allocation failed");
+                free(file_path);
+                free(new_path);
+                continue;
+            }
+
             // Construct the full file path
-            snprintf(file_path, sizeof(file_path), "%s/%s", HOME_DIR, entry->d_name);
+            if (snprintf(file_path, strlen(HOME_DIR) + strlen(entry->d_name) + 2, "%s/%s", HOME_DIR, entry->d_name) >= (strlen(HOME_DIR) + strlen(entry->d_name) + 2)) {
+                fprintf(stderr, "Error: file_path buffer too small for %s/%s\n", HOME_DIR, entry->d_name);
+                free(file_path);
+                free(new_path);
+                continue;
+            }
 
             // Get file statistics
             if (stat(file_path, &file_stat) == -1) {
                 perror("Error retrieving file stats");
+                free(file_path);
+                free(new_path);
                 continue;
             }
 
@@ -84,11 +101,20 @@ int main(int argc, char **argv) {
                 if (shm_ptr->numRows[file_serial] > 0) {
                     printf("File already processed: %s\n", file_path);
                     semaphore_signal(sem);
+                    free(file_path);
+                    free(new_path);
                     continue;
                 }
 
                 // Move the file to "UnProcessed" directory
-                snprintf(new_path, sizeof(new_path), "./home/UnProcessed/%s", entry->d_name);
+                if (snprintf(new_path, strlen("./home/UnProcessed/") + strlen(entry->d_name) + 1, "./home/UnProcessed/%s", entry->d_name) >= (strlen("./home/UnProcessed/") + strlen(entry->d_name) + 1)) {
+                    fprintf(stderr, "Error: new_path buffer too small for ./home/UnProcessed/%s\n", entry->d_name);
+                    free(file_path);
+                    free(new_path);
+                    semaphore_signal(sem);
+                    continue;
+                }
+
                 if (rename(file_path, new_path) == -1) {
                     perror("Error moving file to UnProcessed");
                 } else {
@@ -98,6 +124,10 @@ int main(int argc, char **argv) {
 
                 semaphore_signal(sem);
             }
+
+            // Free memory for file paths
+            free(file_path);
+            free(new_path);
         }
 
         closedir(home_dir);
