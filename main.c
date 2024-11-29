@@ -152,6 +152,10 @@ void setup_resources() {
     shm->totalMoved = 0;
     shm->totalDeleted = 0; // Initialize deleted count
     shm->fileSerial = 0;
+
+    shm->totalBackup = 0;
+
+
     for (int i = 0; i < MAX_FILES; i++) {
     shm->numRows[i] = 0;
 

@@ -22,5 +22,4 @@
 #include <errno.h>
 #include <GL/glut.h>
 
-
 #endif

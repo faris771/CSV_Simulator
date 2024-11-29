@@ -13,8 +13,10 @@ int min_value = DEFAULT_MIN_VALUE, max_value = DEFAULT_MAX_VALUE  ;
 int max_time_generate = DEFAULT_MAX_TIME , min_time_generate = DEFAULT_MIN_TIME;
 float miss_percentage = DEFAULT_MISS_PERCENTAGE;
 SharedMemory shm_ptr;
+
 void generate_csv_file();
 void update_shared_mem();
+
 int main(int argc, char** argv){
 
     // Argument variables

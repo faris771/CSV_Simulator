@@ -7,6 +7,13 @@
 // Message queue key
 #define MESSAGE_QUEUE_KEY 0x2222
 #define HOME_DIR "./home"
+#define UNPROCESSED_DIR "./home/UnProcessed"
+#define PROCESSED_DIR "./home/Processed"
+#define BACKUP_DIR "./home/Backup"
+
+
+
+
 // #define DEFAULT_ROWS_MAX 10000
 // #define DEFAULT_COLS_MAX 10
 // #define DEFAULT_ROWS_MIN 100
