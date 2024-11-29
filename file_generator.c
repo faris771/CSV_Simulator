@@ -5,12 +5,13 @@
 #include "constants.h"
 #include "functions.h"
 sem_t *sem;
+static int file_serial = 0;
 int shm_id;
 int msg_queue_id;
 int max_rows = DEFAULT_ROWS_MAX, max_cols = DEFAULT_COLS_MAX, min_rows = DEFAULT_ROWS_MIN, min_cols = DEFAULT_COLS_MIN ; // Default values
-double min_value = DEFAULT_MIN_VALUE, max_value = DEFAULT_MAX_VALUE  ;
+int min_value = DEFAULT_MIN_VALUE, max_value = DEFAULT_MAX_VALUE  ;
 int max_time_generate = DEFAULT_MAX_TIME , min_time_generate = DEFAULT_MIN_TIME;
-double miss_percentage = DEFAULT_MISS_PERCENTAGE;
+float miss_percentage = DEFAULT_MISS_PERCENTAGE;
 SharedMemory shm_ptr;
 void generate_csv_file();
 void update_shared_mem();
@@ -18,15 +19,15 @@ int main(int argc, char** argv){
 
     // Argument variables
     int file_generators, csv_calculators, file_movers, timer_duration,min_rows,max_rows,min_cols,max_cols ,min_time_generate,max_time_generate
-                    ;
-    double min_value,max_value,miss_percentage;
+                    ,min_value,max_value,miss_percentage;
     int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
+    int age_threshold = 0;
     // Read arguments from file
-    read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers,
+    read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers, 
                    &type1_inspectors, &type2_inspectors, &type3_inspectors, &timer_duration,
                    &min_rows, &max_rows, &min_cols, &max_cols, &min_time_generate, &max_time_generate,
-                   &min_value, &max_value, &miss_percentage);
-
+                   &min_value, &max_value, &miss_percentage, &age_threshold);
+    
     ////////////////////////////////////////////////////////////////////////////
 
     printf("MASA CHECK -----> FILE_GENERATORS=%d\n", file_generators);
@@ -47,11 +48,6 @@ int main(int argc, char** argv){
     printf("MASA CHECK -----> MISS_PERCENTAGE=%.2f\n", miss_percentage);
 
     ////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
 
     srand(time(NULL) + getpid()); // Seed for randomness
     sem = setup_semaphore();
@@ -118,9 +114,7 @@ void generate_csv_file() {
                 fprintf(file, " ,");
             } else {
                 // Non-missing value
-            float random_value = min_value + ((float)rand() / RAND_MAX) * (max_value - min_value);
-             fprintf(file, "%.2f", random_value);
-
+                fprintf(file, "%.2f", (float)(min_value + rand() % (max_value - min_value + 1)));
             }
 
             if (j < cols - 1) {

@@ -14,4 +14,3 @@ gcc -g drawer.c -o drawer -lglut -lGLU -lGL -lm -lpthread -lrt
 
 
 
-
