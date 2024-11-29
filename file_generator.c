@@ -9,20 +9,26 @@ static int file_serial = 0;
 int shm_id;
 int msg_queue_id;
 int max_rows = DEFAULT_ROWS_MAX, max_cols = DEFAULT_COLS_MAX, min_rows = DEFAULT_ROWS_MIN, min_cols = DEFAULT_COLS_MIN ; // Default values
-int min_value = DEFAULT_MIN_VALUE, max_value = DEFAULT_MAX_VALUE  ;
+double min_value = DEFAULT_MIN_VALUE, max_value = DEFAULT_MAX_VALUE  ;
+
+int type1_inspectors = DEFAULT_TYPE1_INSPECTORS, type2_inspectors = DEFAULT_TYPE2_INSPECTORS,type3_inspectors = DEFAULT_TYPE3_INSPECTORS; 
+int file_generators = DEFAULT_GENERATORS, csv_calculators = DEFAULT_CSV_CALCULATORS, file_movers = DEFAULT_FILE_MOVERS, timer_duration = DEFAULT_TIMER_DURATION, age_threshold= DEFAULT_AGE_THRESHOLD;
+
+
+
 int max_time_generate = DEFAULT_MAX_TIME , min_time_generate = DEFAULT_MIN_TIME;
-float miss_percentage = DEFAULT_MISS_PERCENTAGE;
+double miss_percentage = DEFAULT_MISS_PERCENTAGE;
 SharedMemory shm_ptr;
 void generate_csv_file();
 void update_shared_mem();
 int main(int argc, char** argv){
 
     // Argument variables
-    int file_generators, csv_calculators, file_movers, timer_duration,min_rows,max_rows,
-        min_cols,max_cols ,min_time_generate,max_time_generate;
-    double min_value,max_value,miss_percentage;               
-    int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
-    int age_threshold = 0;
+    // int file_generators, csv_calculators, file_movers, timer_duration,min_rows,max_rows,
+    //     min_cols,max_cols ,min_time_generate,max_time_generate;
+    // double min_value,max_value,miss_percentage;               
+    // int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
+    //int age_threshold = 0;
     // Read arguments from file
     read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers, 
                    &type1_inspectors, &type2_inspectors, &type3_inspectors, &timer_duration,
@@ -116,7 +122,7 @@ void generate_csv_file() {
                 fprintf(file, " ,");
             } else {
                 // Non-missing value
-                fprintf(file, "%.2f", (float)(min_value + rand() % (max_value - min_value + 1)));
+                fprintf(file, "%.2f", (float)(min_value + rand() %(int)(max_value - min_value + 1)));
             }
 
             if (j < cols - 1) {
