@@ -396,3 +396,12 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+#
+#inspector_type1
+#inspector_type2
+#inspector_type3
+#
+#main
+#csv_calculator
+#dr
