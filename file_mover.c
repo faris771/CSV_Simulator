@@ -27,6 +27,7 @@ int main(int argc, char** argv){
     return 0;
 }
 void move_file(const char *file_path) {
+  sleep(6);
     char processed_dir[MSG_SIZE] = "./home/Processed";
 
     // Create the Processed directory if it doesn't exist

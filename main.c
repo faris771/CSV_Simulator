@@ -8,7 +8,8 @@
 // Function prototypes
 void setup_resources();
 void cleanup_resources();
-void fork_processes(file_generators, csv_calculators, file_movers, type1_inspectors, type2_inspectors, type3_inspectors, age_threshold);
+void fork_processes(int file_generators, int csv_calculators, int file_movers, 
+    int type1_inspectors, int type2_inspectors, int type3_inspectors, int age_threshold);
 void monitor_simulation(int duration, int processed_threshold, int unprocessed_threshold, int moved_threshold, int deleted_threshold);
 void create_drawer_process();
 void handle_signal(int sig);
@@ -19,11 +20,11 @@ int main(int argc, char** argv) {
     // Argument variables
     int file_generators, csv_calculators, file_movers, timer_duration,min_rows,
         max_rows,min_cols,max_cols ,min_time_generate,
-        max_time_generate,min_value, max_value, miss_percentage;
+        max_time_generate;
+    double min_value, max_value, miss_percentage;
     int type1_inspectors = 0, type2_inspectors = 0, type3_inspectors = 0;
     int age_threshold = 0;
-    // changed these
-    //double min_value, max_value, miss_percentage;
+
     // Read arguments from file
     read_arguments("arguments.txt", &file_generators, &csv_calculators, &file_movers, 
                    &type1_inspectors, &type2_inspectors, &type3_inspectors, &timer_duration,
@@ -211,11 +212,13 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
             execlp("./csv_calculator", "csv_calculator", NULL);
             perror("CSV Calculator Exec Error");
             exit(EXIT_FAILURE);
+            sleep(13);
         }
         else if (pid < 0) {
             perror("Error forking CSV calculator");
             exit(EXIT_FAILURE);
         }
+        sleep(2);
     }
 
     // Fork file movers
@@ -226,11 +229,13 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
             execlp("./file_mover", "file_mover", NULL);
             perror("File Mover Exec Error");
             exit(EXIT_FAILURE);
+            sleep(10);
         }
         else if (pid < 0) {
             perror("Error forking file mover");
             exit(EXIT_FAILURE);
         }
+        sleep(2);
     }
 
     // // Fork inspectors
