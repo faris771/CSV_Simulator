@@ -100,6 +100,39 @@ void process_csv_file() {
             shm_ptr->columnAverages[fileSerial][i] = average; // Update shared memory
             printf("  Column %d: Sum = %.2f, Count = %d, Average = %.2f\n",
                 i + 1, columnSums[i], columnCounts[i], average);
+
+            // Update min and max averages
+            if (average < shm_ptr->minAvg) {
+                printf("======================================================\n");
+                printf("Min average updated:from %.2f to %.2f\n", shm_ptr->minAvg, average);
+
+                shm_ptr->minAvg = average;
+                shm_ptr->minAvgColumn = i;
+                strcpy(shm_ptr->minAvgFileName, file_path);
+
+                printf("MIN AVG file: %s, column: %d\n", shm_ptr->minAvgFileName, shm_ptr->minAvgColumn);
+
+                printf("======================================================\n");
+
+
+            }
+
+            if (average > shm_ptr->maxAvg) {
+
+                printf("======================================================\n");
+                printf("Max average updated:from %.2f to %.2f\n", shm_ptr->maxAvg, average);
+
+                shm_ptr->maxAvg = average;
+                shm_ptr->maxAvgColumn = i;
+                strcpy(shm_ptr->maxAvgFileName, file_path);
+
+                printf("MAX AVG file: %s, column: %d\n", shm_ptr->maxAvgFileName, shm_ptr->maxAvgColumn);
+
+                printf("======================================================\n");
+
+
+            }
+
         }
 
         shm_ptr->totalProcessed++;

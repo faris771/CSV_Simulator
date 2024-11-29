@@ -4,6 +4,8 @@
 #include "header.h"
 #include "constants.h"
 
+
+
 // Define the shared memory structure
 struct shared_memory {
     int totalGenerated;     // Total CSV files generated
@@ -15,9 +17,18 @@ struct shared_memory {
     int totalBackup;
 
 
+
     int numRows[MAX_FILES];                // Number of rows for each file
     double columnAverages[MAX_FILES][MAX_COLUMNS]; // 2D array to store the average of each column for every file
 
+
+    double minAvg;
+    char minAvgFileName[FILENAME_MAX];
+    int minAvgColumn;
+
+    double maxAvg;
+    char maxAvgFileName[FILENAME_MAX];
+    int maxAvgColumn;
 
 };
 

@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 
     // Ensure that the "home" and "UnProcessed" directories exist
     ensure_directory(HOME_DIR);
-    ensure_directory("./home/UnProcessed");
+    ensure_directory(UNPROCESSED_DIR);
 
     while (1) {
         DIR *home_dir = opendir(HOME_DIR);
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 
             // Check if the file age exceeds the threshold
             double file_age = difftime(current_time, file_stat.st_mtime);
-            printf("Inspecting file: %s, Age: %.2f seconds\n", file_path, file_age);
+            printf("[INSPECTOR 1] Inspecting file: %s, Age: %.2f seconds\n", file_path, file_age);
 
             if (file_age > age_threshold) {
                 // Extract the file serial number from its name
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
 
                 // Check if the file has been handled by the calculator
                 if (shm_ptr->numRows[file_serial] > 0) {
-                    printf("File already processed: %s\n", file_path);
+                    printf("[INSPECTOR 1] File already processed: %s\n", file_path);
                     semaphore_signal(sem);
                     free(file_path);
                     free(new_path);

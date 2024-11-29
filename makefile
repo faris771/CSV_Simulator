@@ -1,7 +1,7 @@
 # Compiler and flags
 GCC = gcc -g
 CFLAGS = -Wall -lpthread -lrt
-TARGETS = main file_generator csv_calculator file_mover inspector_type1 inspector_type2 inspector_type3
+TARGETS = main file_generator csv_calculator file_mover inspector_type1 inspector_type2 inspector_type3 read_shared_memory drawer
 
 # Default rule: Build all targets
 all: $(TARGETS)
@@ -31,6 +31,14 @@ inspector_type2: inspector_type2.c shared_memories.h message_queues.h semphores.
 
 inspector_type3: inspector_type3.c shared_memories.h message_queues.h semphores.h constants.h
 	$(GCC) $(CFLAGS) inspector_type3.c -o inspector_type3
+
+# Build read_shared_memory
+read_shared_memory: read_shared_memory.c shared_memories.h message_queues.h semphores.h constants.h
+	$(GCC) $(CFLAGS) read_shared_memory.c -o read_shared_memory
+
+# Build drawer
+drawer: drawer.c shared_memories.h message_queues.h semphores.h constants.h
+	$(GCC) $(CFLAGS) drawer.c -o drawer
 
 # Clean all compiled files
 clean:

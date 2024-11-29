@@ -65,9 +65,9 @@ int main(int argc, char **argv) {
             exit(EXIT_FAILURE);
         }
 
-        printf("[INSPECTOR 3] TOTAL BACKUP: %d\n", shm_ptr->totalBackup);
 
         SharedMemory shm_ptr = attach_shared_memory(shm_id);
+//        printf("[INSPECTOR 3] TOTAL BACKUP: %d\n", shm_ptr->totalBackup);
 
         time_t current_time = time(NULL);
 
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
 
             // Check if the file age exceeds the threshold
             double file_age = difftime(current_time, file_stat.st_mtime);
-            printf("Inspecting file: %s, Age: %.2f seconds\n", file_path, file_age);
+            printf("[INSPECTOR 3] Inspecting file: %s, Age: %.2f seconds\n", file_path, file_age);
 
             if (file_age > age_threshold) {
                 // Extract the file serial number from its name
@@ -106,12 +106,12 @@ int main(int argc, char **argv) {
 
                 semaphore_wait(sem); // Use semaphore to ensure mutual exclusion
 
-                // Check if the file has been handled by the calculator
-                if (shm_ptr->numRows[file_serial] > 0) {
-                    printf("File already processed: %s\n", file_path);
-                    semaphore_signal(sem);
-                    continue;
-                }
+//                // Check if the file has been handled by the calculator
+//                if (shm_ptr->numRows[file_serial] > 0) {
+//                    printf("File already processed: %s\n", file_path);
+//                    semaphore_signal(sem);
+//                    continue;
+//                }
                 // delete the file
 
                 if (remove(file_path) == -1) {

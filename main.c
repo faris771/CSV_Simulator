@@ -153,8 +153,16 @@ void setup_resources() {
     shm->totalMoved = 0;
     shm->totalDeleted = 0; // Initialize deleted count
     shm->fileSerial = 0;
-
     shm->totalBackup = 0;
+
+    shm->minAvg = POSITIVE_FLOAT_INFINITY;
+    shm->minAvgColumn = -1;
+    strcpy(shm->minAvgFileName, "NOT YET DECLARED");
+
+    shm->maxAvg = NEGATIVE_FLOAT_INFINITY;
+    shm->maxAvgColumn = -1;
+    strcpy(shm->maxAvgFileName, "NOT YET DECLARED");
+
 
 
     for (int i = 0; i < MAX_FILES; i++) {
@@ -163,6 +171,9 @@ void setup_resources() {
     for (int j = 0; j < MAX_COLUMNS; j++) {
         shm->columnAverages[i][j] = 0.0;
     }
+
+
+
 }
     detach_shared_memory(shm);
 
@@ -308,6 +319,12 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
             exit(EXIT_FAILURE);
         }
     }
+
+//    pid_t reporter = fork();
+//    if (reporter == 0) {
+//
+//    }
+//
 
     printf("Processes forked successfully.\n");
 }

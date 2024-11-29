@@ -57,5 +57,8 @@
 #define UNPROCESSED_THRESHOLD 50      // Max unprocessed files
 #define MOVED_THRESHOLD 200           // Max files moved to Backup
 #define DELETED_THRESHOLD 300         // Max files deleted
+#define POSITIVE_FLOAT_INFINITY 1000000000.0
+#define NEGATIVE_FLOAT_INFINITY -1000000000.0
+
 
 #endif
