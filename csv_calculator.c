@@ -37,11 +37,8 @@ void process_csv_file() {
     char file_path[MSG_SIZE]; // Variable to hold the file path
 
     while (1) {
-        sleep(5); // 5 seconds delay
-
-        // Wait for the file path from the message queue and store it in file_path
-       receive_message(msg_queue_id, 1, file_path); // Only process type-1 messages
-        
+        // Wait for the file path from the message queue
+        receive_message(msg_queue_id, 1, file_path); // Only process type-1 messages
 
         // Extract file serial number from the filename
         char *filename = strrchr(file_path, '/');
@@ -64,6 +61,7 @@ void process_csv_file() {
         int columnCounts[MAX_COLUMNS] = {0};
         char line[1024];
 
+        // Get column count from the first line
         if (fgets(line, sizeof(line), file) != NULL) {
             char *token = strtok(line, ",");
             while (token != NULL) {
@@ -72,6 +70,7 @@ void process_csv_file() {
             }
         }
 
+        // Process rows and calculate sums and averages
         while (fgets(line, sizeof(line), file) != NULL) {
             rows++;
             char *token = strtok(line, ",");
@@ -103,11 +102,18 @@ void process_csv_file() {
                 i + 1, columnSums[i], columnCounts[i], average);
         }
 
-     shm_ptr->totalProcessed++;
-     semaphore_signal(sem);
+        shm_ptr->totalProcessed++;
+        semaphore_signal(sem);
 
-
-      send_message(msg_queue_id, 2, file_path); // File mover notifications
+        // Send notification to file mover
+        send_message(msg_queue_id, 2, file_path); // File mover notifications
         printf("Notification sent to mover: %s\n", file_path);
+
+        // Calculate dynamic processing time based on number of rows
+        int processingTime = rows * 2;
+        printf("Processing time for file: %d seconds\n", processingTime);
+
+        // Sleep to ensure there is enough delay after processing the file
+        sleep(processingTime); // Sleep dynamically based on the number of rows
     }
 }

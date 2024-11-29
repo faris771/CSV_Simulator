@@ -212,11 +212,13 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
             execlp("./csv_calculator", "csv_calculator", NULL);
             perror("CSV Calculator Exec Error");
             exit(EXIT_FAILURE);
+            sleep(13);
         }
         else if (pid < 0) {
             perror("Error forking CSV calculator");
             exit(EXIT_FAILURE);
         }
+        sleep(2);
     }
 
     // Fork file movers
@@ -227,11 +229,13 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
             execlp("./file_mover", "file_mover", NULL);
             perror("File Mover Exec Error");
             exit(EXIT_FAILURE);
+            sleep(10);
         }
         else if (pid < 0) {
             perror("Error forking file mover");
             exit(EXIT_FAILURE);
         }
+        sleep(2);
     }
 
     // // Fork inspectors
