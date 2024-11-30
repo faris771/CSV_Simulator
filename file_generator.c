@@ -5,7 +5,10 @@
 #include "constants.h"
 #include "functions.h"
 sem_t *sem;
-static int file_serial = 0;
+
+//static int file_serial = 0;
+
+
 int shm_id;
 int msg_queue_id;
 int max_rows = DEFAULT_ROWS_MAX, max_cols = DEFAULT_COLS_MAX, min_rows = DEFAULT_ROWS_MIN, min_cols = DEFAULT_COLS_MIN ; // Default values
@@ -118,6 +121,7 @@ void generate_csv_file() {
     // Write rows of data
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
+
             // Condition for missing values: on diagonal or based on a custom rule
             if (i == j || (i + j) % 5 == 0) {
                 // Missing value condition: diagonal or (i + j) is divisible by 5

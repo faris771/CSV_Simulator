@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # Clean previous builds
+
+rm -r home
+
 make clean
 
 # Build all components

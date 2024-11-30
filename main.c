@@ -288,13 +288,18 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
         }
     }
 
+
+
+    int processedThreshold = PROCESSED_THRESHOLD;
     // Fork Type 2 inspectors
     for (int i = 0; i < type2_inspectors; i++) {
         pid = fork();
         if (pid == 0) {
             printf("Type 2 inspector %d started\n", i + 1);
             char age_arg[16];
-            sprintf(age_arg, "%d", age_threshold);
+
+            sprintf(age_arg, "%d", processedThreshold);
+
             execlp("./inspector_type2", "inspector_type2", age_arg, NULL); // Pass age_threshold
             perror("Type 2 Inspector Exec Error");
             exit(EXIT_FAILURE);
@@ -304,13 +309,15 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
         }
     }
 
+    int deletedThreshold = DELETED_THRESHOLD;
+
     // Fork Type 3 inspectors
     for (int i = 0; i < type3_inspectors; i++) {
         pid = fork();
         if (pid == 0) {
             printf("Type 3 inspector %d started\n", i + 1);
             char age_arg[16];
-            sprintf(age_arg, "%d", age_threshold);
+            sprintf(age_arg, "%d", deletedThreshold);
             execlp("./inspector_type3", "inspector_type3", age_arg, NULL); // Pass age_threshold
             perror("Type 3 Inspector Exec Error");
             exit(EXIT_FAILURE);

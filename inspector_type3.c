@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
                 if (remove(file_path) == -1) {
                     perror("Error deleting file");
                 } else {
-                    printf("File deleted: %s\n", file_path);
+                    printf("[INSPECTOR 3] File deleted: %s\n", file_path);
                     shm_ptr->totalDeleted++; // Update shared memory count
                     shm_ptr->totalBackup--; // Update shared memory count
                 }
@@ -126,6 +126,10 @@ int main(int argc, char **argv) {
 
 
             }
+
+            // ----------------
+//            sleep(1);
+            // ----------------
         }
 
         closedir(backup_dir);

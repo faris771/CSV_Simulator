@@ -120,6 +120,8 @@ int main(int argc, char **argv) {
                 } else {
                     printf("File moved to BACKUP: %s\n", new_path);
                     shm_ptr->totalBackup++; // Update shared memory count
+                    shm_ptr->totalProcessed--; // Update shared memory count
+
 
                 }
 
@@ -127,6 +129,14 @@ int main(int argc, char **argv) {
 
 
             }
+
+
+
+            // ----------------
+            //            sleep(1);
+            // ----------------
+
+
         }
 
         closedir(processed_dir);

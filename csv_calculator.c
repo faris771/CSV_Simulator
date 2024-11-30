@@ -16,6 +16,8 @@ void process_csv_file(); // Function to process CSV file and calculate sums and 
 int main(int argc, char **argv) {
     printf("File calculator Running...\n");
 
+
+
     // Initialize shared memory, semaphore, and message queue
     sem = setup_semaphore();
     shm_id = setup_shared_memory();
@@ -58,7 +60,7 @@ void process_csv_file() {
         // Processing logic (e.g., calculating averages)
         int rows = 0, cols = 0;
         double columnSums[MAX_COLUMNS] = {0};
-        int columnCounts[MAX_COLUMNS] = {0};
+        long long columnCounts[MAX_COLUMNS] = {0};
         char line[1024];
 
         // Get column count from the first line
@@ -135,18 +137,28 @@ void process_csv_file() {
 
         }
 
+        // ========================
+        int processingTime = 1;// + rows / 100; // Dynamic processing time based on the number of rows
+        // ========================
+
+
         shm_ptr->totalProcessed++;
         semaphore_signal(sem);
 
         // Send notification to file mover
+        sleep(processingTime); // Sleep dynamically based on the number of rows
+
+
         send_message(msg_queue_id, 2, file_path); // File mover notifications
         printf("Notification sent to mover: %s\n", file_path);
 
         // Calculate dynamic processing time based on number of rows
-        int processingTime = rows * 2;
+        // ========================
+
+
         printf("Processing time for file: %d seconds\n", processingTime);
 
         // Sleep to ensure there is enough delay after processing the file
-        sleep(processingTime); // Sleep dynamically based on the number of rows
+//        sleep(processingTime); // Sleep dynamically based on the number of rows
     }
 }

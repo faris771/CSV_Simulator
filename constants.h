@@ -34,7 +34,13 @@
 #define MSG_SIZE 512
 // #define  MAX_FILES 100
 #define  MAX_FILES 10
+
+
 #define  MAX_COLUMNS 100
+
+
+//#define  MAX_COLUMNS 10000000
+
 
 //default values for number of inspectors for each type
 #define DEFAULT_TYPE1_INSPECTORS 2
@@ -53,10 +59,21 @@
 
 
 // Thresholds for termination
-#define PROCESSED_THRESHOLD 100       // Max files processed
-#define UNPROCESSED_THRESHOLD 50      // Max unprocessed files
-#define MOVED_THRESHOLD 200           // Max files moved to Backup
-#define DELETED_THRESHOLD 300         // Max files deleted
+#define PROCESSED_THRESHOLD 15       // Max files processed
+#define UNPROCESSED_THRESHOLD 5      // Max unprocessed files
+#define MOVED_THRESHOLD 25           // Max files moved to Backup
+#define DELETED_THRESHOLD 40         // Max files deleted
+
+
+
+//// Thresholds for termination
+//#define PROCESSED_THRESHOLD 100       // Max files processed
+//#define UNPROCESSED_THRESHOLD 50      // Max unprocessed files
+//#define MOVED_THRESHOLD 200           // Max files moved to Backup
+//#define DELETED_THRESHOLD 300         // Max files deleted
+
+
+
 #define POSITIVE_FLOAT_INFINITY 1000000000.0
 #define NEGATIVE_FLOAT_INFINITY -1000000000.0
 
