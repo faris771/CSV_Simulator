@@ -210,6 +210,7 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
         if (pid == 0) {
             printf("File generator %d started\n", i);
             execlp("./file_generator", "file_generator", NULL);
+
             perror("File Generator Exec Error");
             exit(EXIT_FAILURE);
         }
@@ -217,6 +218,10 @@ void fork_processes(int file_generators, int csv_calculators, int file_movers,
             perror("Error forking file generator");
             exit(EXIT_FAILURE);
         }
+
+
+        sleep(2);
+
     }
 
     // Fork CSV calculators

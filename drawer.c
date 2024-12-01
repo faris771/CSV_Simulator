@@ -26,6 +26,8 @@ int totalProcessed = 0;
 int totalUnprocessed = 0;
 int totalMoved = 0;
 int totalDeleted = 0;
+int totalBackUp = 0;
+
 double minAvg = 0.0;
 double maxAvg = 0.0;
 char minAvgFileName[FILENAME_MAX] = "";
@@ -158,7 +160,9 @@ void drawFiles() {
     glColor3f(0.5, 0.5, 0.5); // Gray
     glPointSize(5);
     glBegin(GL_POINTS);
-    int filesInBackup = totalMoved - totalDeleted;
+
+    int filesInBackup = totalBackUp;
+
     for (int i = 0; i < filesInBackup; i++) {
         glVertex2f(-33 + (i % 5) * 2, 15 - (i / 5) * 2);
     }
@@ -167,7 +171,8 @@ void drawFiles() {
     // Represent files in the Processed directory
     glColor3f(0.0, 1.0, 1.0); // Cyan
     glBegin(GL_POINTS);
-    int filesInProcessed = totalProcessed - totalMoved;
+    int filesInProcessed = totalProcessed;
+
     for (int i = 0; i < filesInProcessed; i++) {
         glVertex2f(-33 + (i % 5) * 2, 0 - (i / 5) * 2);
     }
@@ -335,6 +340,10 @@ void readDataFromSharedMemory() {
     maxAvg = shm_ptr->maxAvg;
     minAvgColumn = shm_ptr->minAvgColumn;
     maxAvgColumn = shm_ptr->maxAvgColumn;
+    totalBackUp = shm_ptr->totalBackup;
+
+
+
     strcpy(minAvgFileName, shm_ptr->minAvgFileName);
     strcpy(maxAvgFileName, shm_ptr->maxAvgFileName);
 
