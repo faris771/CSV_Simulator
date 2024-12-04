@@ -20,6 +20,12 @@ int main(int argc, char** argv){
 
         printf("Mover received: %s\n", file_path);
 
+
+        // ========================================
+        sleep(2);
+        // ========================================
+
+
         // Move the file to the Processed directory
         move_file(file_path);
     }

@@ -133,7 +133,12 @@ int main(int argc, char **argv) {
         closedir(home_dir);
 
         // Small delay before rechecking
-        sleep(1);
+        //sleep(1);
+
+        // ==============
+        sleep(5);
+        // ==============
+
     }
 
     return 0;

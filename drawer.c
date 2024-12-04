@@ -184,7 +184,9 @@ void drawFiles() {
     for (int i = 0; i < totalUnprocessed; i++) {
         glVertex2f(-33 + (i % 5) * 2, -15 - (i / 5) * 2);
     }
+
     glEnd();
+
 }
 
 

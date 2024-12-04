@@ -100,8 +100,8 @@ void process_csv_file() {
         for (int i = 0; i < cols; i++) {
             double average = (columnCounts[i] > 0) ? columnSums[i] / columnCounts[i] : 0;
             shm_ptr->columnAverages[fileSerial][i] = average; // Update shared memory
-            printf("  Column %d: Sum = %.2f, Count = %d, Average = %.2f\n",
-                i + 1, columnSums[i], columnCounts[i], average);
+            printf("  Column %d: Sum = %.2f, Count = %lld, Average = %.2f\n",
+                   i + 1, columnSums[i], columnCounts[i], average);
 
             // Update min and max averages
             if (average < shm_ptr->minAvg) {
@@ -137,17 +137,22 @@ void process_csv_file() {
 
         }
 
-        // ========================
-        int processingTime = 1;// + rows / 100; // Dynamic processing time based on the number of rows
-        // ========================
 
+
+        int base_time = 30; // Base processing time
+        double weight_rows = 0.5; // Weight for rows
+        double weight_cols = 0.3; // Weight for columns
+        int processingTime = base_time + (int)(weight_rows * rows + weight_cols * cols);
+
+        // Ensure processing time is within reasonable bounds
+        if (processingTime < 10) processingTime = 10; // Minimum time
+        if (processingTime > 120) processingTime = 120; // Maximum time
 
         shm_ptr->totalProcessed++;
         semaphore_signal(sem);
 
-        // Send notification to file mover
-        sleep(processingTime); // Sleep dynamically based on the number of rows
 
+        sleep(processingTime);
 
         send_message(msg_queue_id, 2, file_path); // File mover notifications
         printf("Notification sent to mover: %s\n", file_path);
